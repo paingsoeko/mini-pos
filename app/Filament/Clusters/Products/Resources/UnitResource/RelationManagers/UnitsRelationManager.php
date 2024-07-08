@@ -7,12 +7,14 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UnitsRelationManager extends RelationManager
 {
+    protected static ?string $badge = 'new';
     protected static string $relationship = 'units';
 
     public function form(Form $form): Form
@@ -26,16 +28,8 @@ class UnitsRelationManager extends RelationManager
                     ->required()
                     ->maxLength(10),
                 Forms\Components\Select::make('unit_category_id')
-                    ->label('Category')
-                    ->native(false)
                     ->relationship(name: 'unitCategory', titleAttribute: 'name')
-                    ->searchable(['name'])
-                    ->preload()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(50),
-                    ]),
+                    ->hiddenOn(UnitsRelationManager::class),
                 Forms\Components\Select::make('unit_type')
                     ->options(UnitType::class)
                     ->default('reference')
@@ -61,9 +55,6 @@ class UnitsRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('short_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('unit_category_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('unit_type'),
                 Tables\Columns\TextColumn::make('value')
                     ->numeric()
@@ -77,10 +68,14 @@ class UnitsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                Tables\Actions\AssociateAction::make(),
+
+
 //                Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
 //                Tables\Actions\DissociateAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
