@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Table extends Model
+class UnitCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, Auditable;
+
 
     protected $fillable = [
-        'name' , 'is_use'
+        'name',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -28,21 +38,8 @@ class Table extends Model
 
     }
 
-
-    public function creator()
+    public function units()
     {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
-
-    public function deleter()
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
+        return $this->hasMany(Unit::class);
     }
 }
