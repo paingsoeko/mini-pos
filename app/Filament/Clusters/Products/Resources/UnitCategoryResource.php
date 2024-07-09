@@ -8,6 +8,7 @@ use App\Filament\Clusters\Products\Resources\UnitCategoryResource\RelationManage
 use App\Models\UnitCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\GlobalSearch\Actions\Action;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -20,6 +21,23 @@ class UnitCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Measurements';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'units.name'];
+    }
+
+    public static function getGlobalSearchResultActions(Model|\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            Action::make('edit')
+                ->url(static::getUrl('edit', ['record' => $record])),
+            Action::make('view')
+                ->url(static::getUrl('view', ['record' => $record])),
+            Action::make('quickView')
+                ->dispatch('quickView', [$record->id])
+        ];
+    }
     protected static ?string $cluster = Products::class;
 
     public static function form(Form $form): Form

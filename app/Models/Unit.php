@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoundedAmount;
 use App\Enums\UnitType;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,7 +29,7 @@ class Unit extends Model
     protected $casts = [
         'unit_type' => UnitType::class,
         'value' => 'decimal:4',
-        'rounded_amount' => 'decimal:4',
+        'rounded_amount' => RoundedAmount::class,
         'deleted_at' => 'datetime',
     ];
 

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Clusters\Products\Resources\UnitResource\RelationManagers;
 
+use App\Enums\RoundedAmount;
 use App\Enums\UnitType;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,10 +41,11 @@ class UnitsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->default(1.0000),
-                Forms\Components\TextInput::make('rounded_amount')
-                    ->required()
-                    ->numeric()
-                    ->default(4.0000),
+                Forms\Components\Select::make('rounded_amount')
+                    ->options(RoundedAmount::labels())
+                    ->default(RoundedAmount::Four)
+                    ->native(false)
+                    ->required(),
             ]);
     }
 
@@ -60,24 +63,22 @@ class UnitsRelationManager extends RelationManager
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('rounded_amount')
-                    ->numeric()
-                    ->sortable(),
+                    ->badge(),
             ])
+            ->paginated(false)
+            ->searchable(false)
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AssociateAction::make(),
-
-
-//                Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
-//                Tables\Actions\DissociateAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,6 +32,18 @@ class UnitCategory extends Model
 
         static::creating(function ($model) {
             $model->created_by = Auth::id();
+//
+//            $user = auth()->user();
+//
+//            Notification::make()
+//                ->title('New Unit Category')
+//                ->icon('heroicon-o-shopping-bag')
+//                ->body("**{$model->name} is created.**")
+////            ->actions([
+////                Action::make('View')
+////                    ->url(UnitCategory::getUrl('edit', ['record' => $model])),
+////            ])
+//                ->sendToDatabase($user)->send();
         });
 
         static::updating(function ($model) {
