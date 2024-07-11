@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UnitType;
 use App\Models\Contact;
+use App\Models\Unit;
+use App\Models\UnitCategory;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Closure;
@@ -19,18 +22,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-//        User::factory()->create([
-//            'name' => 'Owner',
-//            'email' => 'admin@app.com',
-//            'password' => password_hash('password', PASSWORD_DEFAULT),
-//            'role' => 'owner',
-//        ]);
 
         DB::raw('SET time_zone=\'+00:00\'');
 
-        // Admin
+        // Admin Account
         $this->command->warn(PHP_EOL . 'Creating admin user...');
         $user = $this->withProgressBar(1, fn () => User::factory(1)->create([
             'name' => 'Business Owner',
@@ -50,6 +45,53 @@ class DatabaseSeeder extends Seeder
             'type' => 'customer',
         ]));
         $this->command->info('Admin user created.');
+
+
+//        UnitCategory::create([
+//            'name' => 'Units',
+//            'created_by' => 1,
+//        ]);
+        // UnitCategory and Units
+//        $this->command->warn(PHP_EOL . 'Creating Unit Category...');
+//        $unitCategory = $this->withProgressBar(1, fn () => UnitCategory::create([
+//
+//        ]));
+//        $this->command->info('Unit Category created.');
+//
+//        $this->command->warn(PHP_EOL . 'Creating Unit...');
+//
+//        $units = [
+//            [
+//                'name' => 'Pieces',
+//                'short_name' => 'PCs',
+//                'unit_category_id' => 1,
+//                'unit_type' => UnitType::Reference,
+//                'value' => 1,
+//                'rounded_amount' => 0.0000,
+//                'created_by' => 1,
+//            ],
+//            [
+//                'name' => 'Dozen',
+//                'short_name' => 'DZ',
+//                'unit_category_id' => 1,
+//                'unit_type' => UnitType::Bigger,
+//                'value' => 12,
+//                'rounded_amount' => 0.0000,
+//                'created_by' => 1,
+//            ],
+//        ];
+////
+////        $this->withProgressBar($units, function ($unit) {
+////            Unit::create($unit);
+////        });
+//        $this->withProgressBar($units, function ($unit) {
+//            Unit::create($unit);
+//        });
+////        $unitCategory = $this->withProgressBar($units, fn ($units) => UnitCategory::create($units));
+//        $this->command->info('Unit created.');
+//
+
+
 
     }
 

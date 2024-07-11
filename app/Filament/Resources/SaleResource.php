@@ -116,7 +116,6 @@ class SaleResource extends Resource
                                     Forms\Components\Select::make('product_id')
                                         ->label('Product')
                                         ->native(false)
-//
                                         ->relationship('product', 'name')
                                         ->options(Product::all()->mapWithKeys(function ($product) {
                                             return [$product->id => sprintf('%s (Ks%s)', $product->name, $product->sale_price)];
