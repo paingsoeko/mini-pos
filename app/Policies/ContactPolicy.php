@@ -11,8 +11,9 @@ class ContactPolicy
 //     */
     public function viewAny(User $user): bool
     {
-        return $user->isCashier();
+        return true;
     }
+
 
     public function view(User $user): bool
     {

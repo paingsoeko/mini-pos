@@ -10,6 +10,8 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -35,6 +37,43 @@ class User extends Authenticatable implements FilamentUser
        return true;
     }
 
+    public function permissions()
+    {
+        $user = Auth::user();
+
+        $permissions = Cache::remember('user_permissions_' . $user->id, now()->addMinutes(60), function () use ($user) {
+            return RolePermission::where('role_id', $user->role_id)->pluck('permission_id');
+        });
+
+        return $permissions;
+    }
+
+    public function hasPermissionByFeatureAndName(string $featureName, string $permissionName): bool
+    {
+        $feature = Feature::where('name', $featureName)->first();
+
+        if (!$feature) {
+            return false;
+        }
+
+        $permission = Permission::where('feature_id', $feature->id)
+            ->where('name', $permissionName)
+            ->first();
+
+        if (!$permission) {
+            return false;
+        }
+
+        return Cache::remember("user_permissions_{$this->id}", now()->addMinutes(60), function () {
+            return RolePermission::where('role_id', $this->role_id)->pluck('permission_id');
+        })->contains($permission->id);
+    }
+
+
+    public function hasPermission($permission)
+    {
+        return $this->permissions()->contains($permission);
+    }
     public function isAdmin()
     {
         return $this->role === self::ROLE_ADMIN;

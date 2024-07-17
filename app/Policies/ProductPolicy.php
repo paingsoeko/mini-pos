@@ -8,7 +8,7 @@ class ProductPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isCashier();
+        return $user->hasPermissionByFeatureAndName('product', 'viewAny');
     }
 
     public function view(User $user): bool
