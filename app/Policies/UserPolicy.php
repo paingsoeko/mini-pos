@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->hasPermission(1);
     }
 
     /**
@@ -34,9 +34,9 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->hasPermissionByFeatureAndName('user', 'update');
     }
 
     /**

@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 use App\Enums\UnitType;
 use App\Models\Contact;
+use App\Models\Feature;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\Unit;
 use App\Models\UnitCategory;
 use App\Models\User;
@@ -24,12 +28,37 @@ class DatabaseSeeder extends Seeder
     {
 
         DB::raw('SET time_zone=\'+00:00\'');
+        $features = ['user', 'role', 'product'];
+        $permissions = ['viewAny', 'view', 'create', 'update', 'delete', 'import', 'export', 'print'];
+
+        $role = Role::create([
+            'name' => 'SystemAdmin'
+        ]);
+
+        foreach ($features as $f){
+            $feature = Feature::create(['name' => $f]);
+
+            foreach ($permissions as $p){
+                $permission = Permission::create([
+                    'name' => $p,
+                    'feature_id' => $feature->id,
+                ]);
+
+                RolePermission::create([
+                    'role_id' => $role->id,
+                    'permission_id'=> $permission->id,
+                ]);
+            }
+        }
+
+
 
         // Admin Account
         $this->command->warn(PHP_EOL . 'Creating admin user...');
         $user = $this->withProgressBar(1, fn () => User::factory(1)->create([
             'name' => 'Business Owner',
             'email' => 'admin@app.com',
+            'role_id' => $role->id,
             'role' => 'ADMIN',
         ]));
         $this->command->info('Admin user created.');
@@ -90,6 +119,8 @@ class DatabaseSeeder extends Seeder
 ////        $unitCategory = $this->withProgressBar($units, fn ($units) => UnitCategory::create($units));
 //        $this->command->info('Unit created.');
 //
+
+
 
 
 
